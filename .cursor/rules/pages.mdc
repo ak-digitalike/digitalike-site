@@ -1,0 +1,14 @@
+---
+description: Rules for editing digitalike-site page content
+globs: content/**/*.md
+alwaysApply: false
+---
+
+# Page content
+
+- Edit only under `content/pages/` and `content/snippets/` unless asked to change docs or pipeline.
+- Every page needs valid YAML frontmatter per `content/schema/page-frontmatter.md`.
+- German copy for public pages unless an EN file is explicitly requested.
+- Do not use the em dash character.
+- Do not invent customer names in marketing copy.
+- After content changes, remind the human to publish to WordPress staging (see `docs/pipeline/cursor-to-staging.md`).

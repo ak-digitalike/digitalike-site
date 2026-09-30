@@ -1,0 +1,9 @@
+{
+  "name": "digitalike-site",
+  "private": true,
+  "version": "0.1.0",
+  "description": "digitalike.de offer pages and publish pipeline (staging drafts)",
+  "scripts": {
+    "wp:draft": "node scripts/wp-draft.js"
+  }
+}
