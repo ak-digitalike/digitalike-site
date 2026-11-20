@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import { resolveDraftWrite } from "../lib/wp-draft/guard.js";
 import { buildDraftPayload, loadPageMarkdown } from "../lib/wp-draft/parse-page.js";
+import { resolveRestBase } from "../lib/wp-draft/rest-base.js";
 import {
   createDraftPage,
   fetchPageBySlug,
@@ -92,6 +93,7 @@ function pageFileForSlug(slug) {
  */
 async function processPage(filePath, env, apply, offline) {
   const page = loadPageMarkdown(filePath);
+  const restBase = resolveRestBase(page.frontmatter);
   const canonicalSlug = page.frontmatter.slug;
   const entwurfSlug = `${canonicalSlug}-entwurf`;
 
@@ -113,12 +115,14 @@ async function processPage(filePath, env, apply, offline) {
     existingByCanonical = await fetchPageBySlug(
       env.baseUrl,
       env.auth,
-      canonicalSlug
+      canonicalSlug,
+      restBase
     );
     existingEntwurf = await fetchPageBySlug(
       env.baseUrl,
       env.auth,
-      entwurfSlug
+      entwurfSlug,
+      restBase
     );
   }
 
@@ -131,7 +135,12 @@ async function processPage(filePath, env, apply, offline) {
   let parentId;
   const parentSlug = page.frontmatter.parent_slug;
   if (parentSlug && !offline) {
-    const parent = await fetchPageBySlug(env.baseUrl, env.auth, parentSlug);
+    const parent = await fetchPageBySlug(
+      env.baseUrl,
+      env.auth,
+      parentSlug,
+      restBase
+    );
     if (parent) {
       parentId = parent.id;
     } else {
@@ -147,6 +156,7 @@ async function processPage(filePath, env, apply, offline) {
 
   const summary = {
     file: path.relative(ROOT, filePath),
+    restBase,
     canonicalSlug,
     writeSlug: write.slug,
     action: write.action,
@@ -175,10 +185,11 @@ async function processPage(filePath, env, apply, offline) {
       env.baseUrl,
       env.auth,
       write.postId,
-      payload
+      payload,
+      restBase
     );
   } else {
-    result = await createDraftPage(env.baseUrl, env.auth, payload);
+    result = await createDraftPage(env.baseUrl, env.auth, payload, restBase);
   }
 
   const editUrl = `${env.baseUrl.replace(/\/$/, "")}/wp-admin/post.php?post=${result.id}&action=edit`;

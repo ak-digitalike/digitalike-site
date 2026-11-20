@@ -46,7 +46,16 @@ Environment variables (see [.env.example](../../.env.example)):
 - If the canonical slug is already a draft, the script updates that draft.
 - Default without `--apply` is dry-run: JSON summary to stdout, no `POST`.
 
-Polylang: requests use `lang=de` on read and write.
+Polylang: lookups use `lang=de` first, then retry without `lang` if empty.
+
+### Post type (digitalike.de)
+
+Offer pages are not core `pages`. They use the custom post type **leistungen** (`/wp-json/wp/v2/leistungen`).
+
+- Frontmatter `template: leistung` or `template: schulung` selects REST base `leistungen`.
+- Override with optional `wp_rest_base` in frontmatter.
+- Dry-run JSON includes `restBase` so you can confirm the target collection.
+- Live slugs on production get sibling drafts `{slug}-entwurf` on the same post type.
 
 ## Phase 1 (manual merge)
 
@@ -73,6 +82,7 @@ Code layout:
 | [lib/wp-draft/guard.js](../../lib/wp-draft/guard.js) | Live-page guard, slug routing |
 | [lib/wp-draft/markdown-to-blocks.js](../../lib/wp-draft/markdown-to-blocks.js) | MD to block markup |
 | [lib/wp-draft/wp-client.js](../../lib/wp-draft/wp-client.js) | REST client |
+| [lib/wp-draft/rest-base.js](../../lib/wp-draft/rest-base.js) | template to REST collection |
 
 ## Security
 
