@@ -2,8 +2,14 @@
   "name": "digitalike-site",
   "private": true,
   "version": "0.1.0",
+  "type": "module",
   "description": "digitalike.de offer pages and publish pipeline (staging drafts)",
   "scripts": {
-    "wp:draft": "node scripts/wp-draft.js"
+    "wp:draft": "node scripts/wp-draft.js",
+    "test": "node --test lib/wp-draft/*.test.js"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "gray-matter": "^4.0.3"
   }
 }
